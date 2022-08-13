@@ -1,6 +1,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QProcess>
+#include <QTimer>
 
 typedef struct {
   int exitCode;
@@ -18,7 +19,7 @@ void printProcessResult(const ProcessResult &result) {
   }
 }
 
-ProcessResult runCommand(const QStringList &args) {
+ProcessResult runWmicCommand(const QStringList &args) {
   QProcess process;
   process.start("C:/Windows/System32/wbem/WMIC.exe", args);
   process.waitForFinished();
@@ -38,7 +39,7 @@ double getCpuLoadPercent() {
        << "LoadPercentage"
        << "/value";
 
-  auto result = runCommand(args);
+  auto result = runWmicCommand(args);
 
   QRegExp regex("=(\\d+)");
   int pos = regex.indexIn(result.standardOutput);
@@ -63,7 +64,7 @@ double getMemoryUsedPercent() {
                           << "TotalPhysicalMemory"
                           << "/value";
 
-  auto resultTotalPhysicalMemory = runCommand(argsTotalPhysicalMemory);
+  auto resultTotalPhysicalMemory = runWmicCommand(argsTotalPhysicalMemory);
 
   QRegExp regexTotalPhysicalMemory("=(\\d+)");
   int posTotalPhysicalMemory = regexTotalPhysicalMemory.indexIn(resultTotalPhysicalMemory.standardOutput);
@@ -82,7 +83,7 @@ double getMemoryUsedPercent() {
       << "FreePhysicalMemory"
       << "/value";
 
-  auto resultFreePhysicalMemory = runCommand(argsFreePhysicalMemory);
+  auto resultFreePhysicalMemory = runWmicCommand(argsFreePhysicalMemory);
 
   QRegExp regexFreePhysicalMemory("=(\\d+)");
   int posFreePhysicalMemory = regexFreePhysicalMemory.indexIn(resultFreePhysicalMemory.standardOutput);
@@ -114,7 +115,7 @@ double getDiskUsage() {
                << "Capacity"
                << "/value";
 
-  auto resultCapacity = runCommand(argsCapacity);
+  auto resultCapacity = runWmicCommand(argsCapacity);
 
   QRegExp regexCapacity("=(\\d+)");
   int posCapacity = regexCapacity.indexIn(resultCapacity.standardOutput);
@@ -133,7 +134,7 @@ double getDiskUsage() {
                 << "FreeSpace"
                 << "/value";
 
-  auto resultFreeSpace = runCommand(argsFreeSpace);
+  auto resultFreeSpace = runWmicCommand(argsFreeSpace);
 
   QRegExp regexFreeSpace("=(\\d+)");
   int posFreeSpace = regexFreeSpace.indexIn(resultFreeSpace.standardOutput);
@@ -174,7 +175,7 @@ QString getIpAddress() {
        << "IPAddress"
        << "/value";
 
-  auto result = runCommand(args);
+  auto result = runWmicCommand(args);
 
   //  printProcessResult(result);
 
@@ -188,11 +189,39 @@ QString getIpAddress() {
   return value;
 }
 
-int main(int argc, char *argv[]) {
-  qDebug() << getCpuLoadPercent();
-  qDebug() << getMemoryUsedPercent();
-  qDebug() << getDiskUsage();
-  qDebug() << getIpAddress();
+class Core : public QObject {
+  Q_OBJECT
 
-  return 0;
+public:
+  Core(QObject *parent = nullptr) : QObject(parent){};
+
+public slots:
+  void run() {
+    qInfo() << getCpuLoadPercent();
+    qInfo() << "-----------------------------------------------------";
+    qInfo() << getMemoryUsedPercent();
+    qInfo() << "-----------------------------------------------------";
+    qInfo() << getDiskUsage();
+    qInfo() << "-----------------------------------------------------";
+    qInfo() << getIpAddress();
+    qInfo() << "-----------------------------------------------------";
+
+    emit finished();
+  };
+
+signals:
+  void finished();
+};
+
+#include "main.moc"
+
+int main(int argc, char *argv[]) {
+  QCoreApplication app(argc, argv);
+
+  Core *core = new Core(&app);
+  // Only for console app. This will run from the application event loop.
+  QObject::connect(core, SIGNAL(finished()), &app, SLOT(quit()));
+  QTimer::singleShot(0, core, SLOT(run()));
+
+  return QCoreApplication::exec();
 }
