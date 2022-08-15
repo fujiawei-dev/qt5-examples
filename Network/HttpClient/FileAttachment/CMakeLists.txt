@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(downloader)
+project(file_attachment)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -70,19 +70,19 @@ message(STATUS "On Clion, you should set QT_ASSUME_STDERR_HAS_CONSOLE=1;QT_DEBUG
 find_package(
         Qt5 COMPONENTS
         Core
-        Concurrent
         Network
         REQUIRED
 )
 
 add_executable(
-    downloader
-    main.cpp
+        file_attachment
+        main.cpp
+        downloader.cpp
+        downloader.h
 )
 
 target_link_libraries(
-        downloader
+        file_attachment
         Qt5::Core
-        Qt5::Concurrent
         Qt5::Network
 )
