@@ -24,19 +24,23 @@ void FileAttachmentDownloader::onMetaDataChanged() {
   for (const QByteArray &header : headers) {
     qDebug() << header << ":" << m_networkReply->rawHeader(header);
   }
+
+  contentLength = m_networkReply->header(QNetworkRequest::ContentLengthHeader).toInt();
 }
 
 void FileAttachmentDownloader::onReadReady() {
   QByteArray data = m_networkReply->readAll();
-  qDebug() << "read ready:" << data.size();
+  downloadedLength += data.size();
   m_buffer.append(data);
+
+  emit refreshDownloadProgress((int) (downloadedLength / (contentLength / 100)));
 }
 
 void FileAttachmentDownloader::onFinished() {
   if (m_networkReply->error() == QNetworkReply::NoError) {
     QByteArray disposition = m_networkReply->rawHeader("Content-Disposition");
     auto fileName = disposition.split(';').last().split('=').last().replace("\"", "").trimmed();
-    auto filePath = QDir::tempPath() + "/"+ fileName;
+    auto filePath = QDir::tempPath() + "/" + fileName;
 
     QFile file(filePath);
     if (!file.open(QIODevice::Truncate | QIODevice::WriteOnly)) {
@@ -50,7 +54,12 @@ void FileAttachmentDownloader::onFinished() {
     qWarning() << "download file failed" << m_networkReply->errorString();
   }
 
+  disconnect(m_networkReply, &QNetworkReply::metaDataChanged, this, &FileAttachmentDownloader::onMetaDataChanged);
+  disconnect(m_networkReply, &QNetworkReply::readyRead, this, &FileAttachmentDownloader::onReadReady);
+  disconnect(m_networkReply, &QNetworkReply::finished, this, &FileAttachmentDownloader::onFinished);
+
   downloading = false;
+  contentLength = 0;
 
   if (!m_urls.isEmpty()) {
     downloadFile(m_urls.takeFirst());

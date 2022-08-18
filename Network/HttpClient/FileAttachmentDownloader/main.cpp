@@ -11,27 +11,30 @@ public:
   Core(QObject *parent = nullptr) : QObject(parent) {
     downloader = new FileAttachmentDownloader(this);
     connect(downloader, &FileAttachmentDownloader::fileDownloaded, this, &Core::onFileDownloaded);
+    connect(downloader, &FileAttachmentDownloader::refreshDownloadProgress, this, [] (int value) {
+      qDebug() << "core: received value" << value;
+    });
   };
 
 public slots:
   void run() {
     downloader->downloadFile("http://localhost:26535/file_attachment/exe");
 
-    for (int i = 0; i < 9; i++) {
-      downloader->downloadFile("http://localhost:26535/file_attachment/ascii");
-    }
+//    for (int i = 0; i < 9; i++) {
+//      downloader->downloadFile("http://localhost:26535/file_attachment/ascii");
+//    }
   };
 
   void onFileDownloaded(const QString &filePath) {
     qDebug() << "file downloaded:" << filePath;
 
     if (filePath.endsWith(".exe")) {
-      QProcess::startDetached(filePath);
+//      QProcess::startDetached(filePath);
     }
 
-    if (++count == 10) {
+//    if (++count == 10) {
       emit finished();
-    }
+//    }
   }
 
 signals:
