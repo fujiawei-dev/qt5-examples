@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>main.js</file>
+        <file>SystemPopup.ui.qml</file>
     </qresource>
 </RCC>

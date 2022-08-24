@@ -19,9 +19,56 @@ Window {
         anchors.centerIn: parent
         text: "打开弹出窗口"
         font.pixelSize: 16
-        onClicked: popup.open()
+        onClicked: systemPopup.open()
         Component.onCompleted: {
-            popup.open()
+            systemPopup.open()
+        }
+    }
+
+    SystemPopup {
+        id: systemPopup
+        parent: Overlay.overlay
+        x: Math.round((parent.width - width) / 2)
+        y: Math.round((parent.height - height) / 2)
+        leftButton.onClicked: {
+            systemPopup.close()
+        }
+        rightButton.onClicked: {
+            systemPopup.close()
+            timer.start()
+        }
+
+        Timer {
+            id: timer
+            interval: 1000
+            running: false
+            onTriggered: {
+                popupState.state = popupState.state === "Downloaded"? "Detected": "Downloaded"
+                systemPopup.open()
+            }
+        }
+
+        Rectangle {
+            id: popupState
+            state: "Detected"
+
+            states: [
+                State {
+                    name: "Detected"
+                    PropertyChanges {
+                        target: systemPopup
+                        dialogText.text: qsTr("New version detected. Please update.")
+                    }
+                },
+
+                State {
+                    name: "Downloaded"
+                    PropertyChanges {
+                        target: systemPopup
+                        dialogText.text: qsTr("New version downloaded. Please restart.")
+                    }
+                }
+            ]
         }
     }
 
@@ -159,7 +206,7 @@ Window {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.75}
+    D{i:0;autoSize:true;height:480;width:640}
 }
 ##^##*/
 
