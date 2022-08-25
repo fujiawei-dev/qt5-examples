@@ -14,6 +14,9 @@ Window {
 
     title: qsTr("Window")
 
+    // 无边框
+    flags: Qt.FramelessWindowHint
+
    property bool closing: false
 
    MessageDialog {
