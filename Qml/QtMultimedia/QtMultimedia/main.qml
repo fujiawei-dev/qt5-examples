@@ -25,9 +25,13 @@ Window {
 
         Camera {
             id: camera
-            deviceId: QtMultimedia.defaultCamera.deviceId
 
+            deviceId: "@device:pnp:\\\\?\\usb#vid_058f&pid_3822&mi_00#7&2be51ce4&0&0000#{65e8773d-8f56-11d0-a3b9-00a0c9223196}\\global"
+
+            //                        deviceId: QtMultimedia.defaultCamera.deviceId
             captureMode: Camera.CaptureStillImage
+
+            Component.onCompleted: camera.stop()
 
             imageCapture {
                 onCaptureFailed: {
@@ -76,7 +80,12 @@ Window {
                     font.pixelSize: 14
                 }
 
-                onClicked: camera.deviceId = modelData.deviceId
+                onClicked: {
+                    camera.stop()
+                    console.log(modelData.deviceId)
+                    camera.deviceId = modelData.deviceId
+                    camera.start()
+                }
 
                 MouseArea {
                     onClicked: comboBox.popup.close()
