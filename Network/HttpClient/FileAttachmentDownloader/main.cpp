@@ -42,7 +42,6 @@ signals:
 
 private:
   FileAttachmentDownloader *downloader;
-  int count = 0;
 };
 
 #include "main.moc"

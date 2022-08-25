@@ -39,7 +39,12 @@ void FileAttachmentDownloader::onReadReady() {
 void FileAttachmentDownloader::onFinished() {
   if (m_networkReply->error() == QNetworkReply::NoError) {
     QByteArray disposition = m_networkReply->rawHeader("Content-Disposition");
-    auto fileName = disposition.split(';').last().split('=').last().replace("\"", "").trimmed();
+    QString fileName = disposition.split(';').last().split('=').last().replace("\"", "").trimmed();
+
+    if (fileName.isEmpty()) {
+      fileName = QFileInfo(m_networkReply->url().path()).fileName();
+    }
+
     auto filePath = QDir::tempPath() + "/" + fileName;
 
     QFile file(filePath);
@@ -60,6 +65,7 @@ void FileAttachmentDownloader::onFinished() {
 
   downloading = false;
   contentLength = 0;
+  downloadedLength = 0;
 
   if (!m_urls.isEmpty()) {
     downloadFile(m_urls.takeFirst());
