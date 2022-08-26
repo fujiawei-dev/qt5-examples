@@ -1,5 +1,5 @@
-#ifndef MENU__CORE_H
-#define MENU__CORE_H
+#ifndef FRAME__CORE_H
+#define FRAME__CORE_H
 
 #include <QDebug>
 #include <QObject>
@@ -11,4 +11,4 @@ public:
   explicit Core(QObject *parent = nullptr);
 };
 
-#endif//MENU__CORE_H
+#endif//FRAME__CORE_H

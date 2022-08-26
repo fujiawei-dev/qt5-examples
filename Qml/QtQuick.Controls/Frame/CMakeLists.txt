@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(menu)
+project(frame)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -60,7 +60,7 @@ find_package(
 )
 
 add_executable(
-        menu
+        frame
         main.cpp
         core.cpp
         core.h
@@ -68,7 +68,7 @@ add_executable(
 )
 
 target_link_libraries(
-        menu
+        frame
         Qt5::Core
         Qt5::Gui
         Qt5::Widgets
