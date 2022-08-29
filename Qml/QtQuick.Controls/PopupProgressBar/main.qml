@@ -97,7 +97,14 @@ Window {
                         running: true
                         repeat: true
                         onTriggered: {
-                            parent.value += 0.01
+                            if (parent.value < 0.8) {
+                                parent.value += 0.01
+                            } else if (parent.value < 0.9) {
+                                parent.value += 0.005
+                            } else if (parent.value < 0.99) {
+                                parent.value += 0.001
+                            }
+
                             if (parent.value > 1) {
                                 parent.value = 0
                             }
