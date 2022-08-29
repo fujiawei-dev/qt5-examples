@@ -35,7 +35,16 @@ Window {
 
         modal: true
         focus: true
-        closePolicy: Popup.NoAutoClose
+        // closePolicy: Popup.NoAutoClose
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+
+        onClosed: {
+            progressBar.value = 0
+        }
+
+        onOpened: {
+            progressBar.value = 0
+        }
 
         enter: Transition {
             NumberAnimation {
