@@ -38,11 +38,7 @@ Window {
         // closePolicy: Popup.NoAutoClose
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
-        onClosed: {
-            progressBar.value = 0
-        }
-
-        onOpened: {
+        onAboutToShow: {
             progressBar.value = 0
         }
 
@@ -107,15 +103,11 @@ Window {
                         repeat: true
                         onTriggered: {
                             if (parent.value < 0.8) {
-                                parent.value += 0.01
+                                parent.value += 0.05
                             } else if (parent.value < 0.9) {
-                                parent.value += 0.005
+                                parent.value += 0.02
                             } else if (parent.value < 0.99) {
-                                parent.value += 0.001
-                            }
-
-                            if (parent.value > 1) {
-                                parent.value = 0
+                                parent.value += 0.01
                             }
                         }
                     }
