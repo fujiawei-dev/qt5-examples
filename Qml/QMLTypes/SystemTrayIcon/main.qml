@@ -39,7 +39,17 @@ Window {
 
         menu: Menu {
             MenuItem {
-                text: qsTr("Quit")
+                text: qsTr("设置")
+                onTriggered: Qt.quit()
+            }
+
+            MenuItem {
+                text: qsTr("检查更新")
+                onTriggered: Qt.quit()
+            }
+
+            MenuItem {
+                text: qsTr("退出")
                 onTriggered: Qt.quit()
             }
         }
