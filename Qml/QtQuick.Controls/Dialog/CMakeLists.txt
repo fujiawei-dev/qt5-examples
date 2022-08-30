@@ -59,14 +59,12 @@ find_package(
         REQUIRED
 )
 
-qt5_add_big_resources(QML_FILES qml.qrc)
-
 add_executable(
         dialog
         main.cpp
         core.cpp
         core.h
-        ${QML_FILES}
+        qml.qrc
 )
 
 target_link_libraries(
