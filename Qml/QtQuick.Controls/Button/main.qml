@@ -11,27 +11,47 @@ Window {
     height: 480
     title: qsTr("Button")
 
-    Button {
-        id: control
-        text: qsTr("Button")
+    Column {
+        spacing: 25
+        anchors.centerIn: parent
 
-        contentItem: Text {
-            text: control.text
-            font: control.font
-            opacity: enabled ? 1.0 : 0.3
-            color: control.down ? "#17a81a" : "#21be2b"
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            elide: Text.ElideRight
+        Button {
+            text: "A"
+
+            font.pixelSize: 16
+
+            contentItem: Text {
+                text: parent.text
+                font: parent.font
+                opacity: enabled ? 1.0 : 0.3
+                color: parent.down ? "#17a81a" : "#21be2b"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+            }
+
+            background: Rectangle {
+                implicitWidth: 100
+                implicitHeight: 40
+                opacity: enabled ? 1 : 0.3
+                border.color: parent.down ? "#17a81a" : "#21be2b"
+                border.width: 1
+                radius: 2
+            }
         }
 
-        background: Rectangle {
-            implicitWidth: 100
-            implicitHeight: 40
-            opacity: enabled ? 1 : 0.3
-            border.color: control.down ? "#17a81a" : "#21be2b"
-            border.width: 1
-            radius: 2
+        Button {
+            text: "B"
+
+            palette.buttonText: "white"
+
+            background: Rectangle {
+                implicitWidth: 100
+                implicitHeight: 40
+                color: "#1890FF"
+                border.color: "#1890FF"
+                radius: 5
+            }
         }
     }
 
