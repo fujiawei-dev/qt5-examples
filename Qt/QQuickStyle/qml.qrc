@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>main.qml</file>
-        <file>QuickStyle.qml</file>
-    </qresource>
-</RCC>
